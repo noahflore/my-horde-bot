@@ -34,7 +34,7 @@ client.on('messageCreate', async (message) => {
           prompt: `${prompt}`,
           params: {
             temperature: 0.7,
-            max_length: 100,
+            max_length: 512,
             n: 1,
             // Adicione outros parâmetros conforme necessário
           },
