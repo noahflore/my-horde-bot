@@ -23,12 +23,29 @@ async function sendMessage(channel, content) {
     }
 }
 
-async function getMessageHistory(channel, limit = 10) {
-    const messages = await channel.messages.fetch({ limit });
-    // Ordenar mensagens do mais antigo ao mais recente
-    const sortedMessages = messages.sort((a, b) => a.createdTimestamp - b.createdTimestamp);
-    return sortedMessages.map(msg => `${msg.author.username}: ${msg.content}`).join('\n');
+async function getMessageHistoryFormatted(channel, limit = 10) {
+
+    if (!channel || !channel.isTextBased || !channel.messages) {
+        throw new Error('O canal fornecido não é válido ou não suporta mensagens.');
+    }
+      // Certifique-se de que o `limit` seja um número válido
+      if (typeof limit !== 'number' || limit < 1 || limit > 100) {
+        limit = 10; // Valor padrão
+        }
+    const messages = await channel.messages.fetch({ limit }); // Busca as últimas mensagens
+    const history = [];
+
+    messages
+        .filter((msg) => !msg.content.startsWith('!')) // Exclui mensagens que começam com '!'
+        .reverse() // Reverte para manter a ordem cronológica
+        .forEach((msg) => {
+            const isBot = msg.author.bot;
+            const formattedMessage = isBot
+                ? `{{[OUTPUT]]}} ${msg.content}`
+                : `{{[USER1:INPUT]}} ${msg.content}`;
+            history.push(formattedMessage);
+        });
+    return history.join('\n');
 }
 
-
-module.exports = { splitMessage, sendMessage, getMessageHistory };
+module.exports = { splitMessage, sendMessage, getMessageHistoryFormatted };
