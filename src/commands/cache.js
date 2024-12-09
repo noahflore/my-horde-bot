@@ -17,7 +17,7 @@ module.exports = {
             await message.delete();
 
             // Formatar o comando para o prompt
-            const summaryPrompt = '{{[USER1:INPUT]}} faz um resumo da nossa conversa';
+            const summaryPrompt = '{{[USER1:INPUT]}} faz um resumo disso';
 
             // Obter o histórico formatado
             const conversationHistory = await getMessageHistoryFormatted(message.channel, 100);
